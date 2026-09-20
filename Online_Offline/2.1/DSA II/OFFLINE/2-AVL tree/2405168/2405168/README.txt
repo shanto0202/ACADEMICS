@@ -84,8 +84,6 @@ Use C++17:
 ```text
 g++ -std=c++17 AVLTree.cpp -o AVLTree
 g++ -std=c++17 IntervalScheduler.cpp -o IntervalScheduler
-./AVLTree testcase_avl.txt output.txt
-./IntervalScheduler testcase_basic_interval.txt output.txt
 ```
 
 ## 4. Running
@@ -93,13 +91,13 @@ g++ -std=c++17 IntervalScheduler.cpp -o IntervalScheduler
 AVL:
 
 ```text
-
+./AVLTree testcase_avl.txt output.txt
 ```
 
 Interval Scheduler:
 
 ```text
-
+./IntervalScheduler testcase_basic_interval.txt output.txt
 ```
 
 The program follows the input/output command format used by the assignment test cases.

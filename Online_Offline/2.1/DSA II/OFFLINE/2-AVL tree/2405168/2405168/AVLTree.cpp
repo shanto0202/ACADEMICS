@@ -30,22 +30,22 @@ public:
         root = nullptr;
     }
 
-    int height(Node* n) {
-        if (n == nullptr) {
+    int height(Node* node) {
+        if (node == nullptr) {
             return 0;
         }
-        return n->height;
+        return node->height;
     }
 
-    int balance(Node* n) {
-        if (n == nullptr) {
+    int balance(Node* node) {
+        if (node == nullptr) {
             return 0;
         }
-        return height(n->left) - height(n->right);
+        return height(node->left) - height(node->right);
     }
 
-    void updateHeight(Node* n) {
-        n->height = 1 + max(height(n->left), height(n->right));
+    void updateHeight(Node* node) {
+        node->height = 1 + max(height(node->left), height(node->right));
     }
 
     Node* rightRotate(Node* y) {
@@ -74,86 +74,86 @@ public:
         return y;
     }
 
-    Node* balanceTree(Node* n) {
-        if (n == nullptr) {
+    Node* balanceTree(Node* node) {
+        if (node == nullptr) {
             return nullptr;
         }
 
-        updateHeight(n);
+        updateHeight(node);
 
-        int b = balance(n);
+        int b = balance(node);
 
         if (b > 1) {
-            if (balance(n->left) < 0) {
-                n->left = leftRotate(n->left);
+            if (balance(node->left) < 0) {
+                node->left = leftRotate(node->left);
             }
-            return rightRotate(n);
+            return rightRotate(node);
         }
 
         if (b < -1) {
-            if (balance(n->right) > 0) {
-                n->right = rightRotate(n->right);
+            if (balance(node->right) > 0) {
+                node->right = rightRotate(node->right);
             }
-            return leftRotate(n);
+            return leftRotate(node);
         }
 
-        return n;
+        return node;
     }
 
-    Node* insertNode(Node* n, int key, bool& inserted) {
-        if (n == nullptr) {
+    Node* insertNode(Node* node, int key, bool& inserted) {
+        if (node == nullptr) {
             inserted = true;
             return new Node(key);
         }
 
-        if (key < n->key) {
-            n->left = insertNode(n->left, key, inserted);
+        if (key < node->key) {
+            node->left = insertNode(node->left, key, inserted);
         }
-        else if (key > n->key) {
-            n->right = insertNode(n->right, key, inserted);
+        else if (key > node->key) {
+            node->right = insertNode(node->right, key, inserted);
         }
         else {
-            return n;
+            return node;
         }
 
-        return balanceTree(n);
+        return balanceTree(node);
     }
 
-    Node* minimum(Node* n) {
-        while (n != nullptr && n->left != nullptr) {
-            n = n->left;
+    Node* minimum(Node* node) {
+        while (node != nullptr && node->left != nullptr) {
+            node = node->left;
         }
-        return n;
+        return node;
     }
 
-    Node* deleteNode(Node* n, int key, bool& deleted) {
-        if (n == nullptr) {
+    Node* deleteNode(Node* node, int key, bool& deleted) {
+        if (node == nullptr) {
             return nullptr;
         }
 
-        if (key < n->key) {
-            n->left = deleteNode(n->left, key, deleted);
+        if (key < node->key) {
+            node->left = deleteNode(node->left, key, deleted);
         }
-        else if (key > n->key) {
-            n->right = deleteNode(n->right, key, deleted);
+        else if (key > node->key) {
+            node->right = deleteNode(node->right, key, deleted);
         }
         else {
             deleted = true;
 
-            if (n->left == nullptr || n->right == nullptr) {
-                Node* child = (n->left != nullptr) ? n->left : n->right;
-                delete n;
+            if (node->left == nullptr || node->right == nullptr) {
+                Node* child = (node->left != nullptr) ? node->left : node->right;
+                delete node;
                 return child;
             }
 
-            Node* successor = minimum(n->right);
-            n->key = successor->key;
+            Node* successor = minimum(node->right);
+            node->key = successor->key;
 
             bool dummy = false;
-            n->right = deleteNode(n->right, successor->key, dummy);
+            node->right = deleteNode(node->right, successor->key, dummy);
         }
 
-        return balanceTree(n);
+        return balanceTree(node);
     }
 
     bool find(int key) {
@@ -175,32 +175,32 @@ public:
         return false;
     }
 
-    string treeString(Node* n) {
-        if (n == nullptr) {
+    string treeString(Node* node) {
+        if (node == nullptr) {
             return "";
         }
 
-        string result = to_string(n->key);
+        string result = to_string(node->key);
 
-        if (n->left != nullptr || n->right != nullptr) {
+        if (node->left != nullptr || node->right != nullptr) {
             result += "(";
-            result += treeString(n->left);
+            result += treeString(node->left);
             result += ",";
-            result += treeString(n->right);
+            result += treeString(node->right);
             result += ")";
         }
 
         return result;
     }
 
-    void inorder(Node* n, vector<int>& result) {
-        if (n == nullptr) {
+    void inorder(Node* node, vector<int>& result) {
+        if (node == nullptr) {
             return;
         }
 
-        inorder(n->left, result);
-        result.push_back(n->key);
-        inorder(n->right, result);
+        inorder(node->left, result);
+        result.push_back(node->key);
+        inorder(node->right, result);
     }
 
     bool insert(int key) {
@@ -221,14 +221,14 @@ public:
         return result;
     }
 
-    void clear(Node* n) {
-        if (n == nullptr) {
+    void clear(Node* node) {
+        if (node == nullptr) {
             return;
         }
 
-        clear(n->left);
-        clear(n->right);
-        delete n;
+        clear(node->left);
+        clear(node->right);
+        delete node;
     }
 
     ~AVLTree() {
