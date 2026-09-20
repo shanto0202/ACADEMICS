@@ -1,0 +1,115 @@
+-- ONLINE A
+-- Oracle SQL
+
+-- Q1. Select Employee_ID and Full Name of employees whose Last Name
+-- ends with 'son' and has at least 5 characters.
+
+SELECT EMPLOYEE_ID,
+       FIRST_NAME || ' ' || LAST_NAME AS FULL_NAME
+FROM EMPLOYEES
+WHERE LAST_NAME LIKE '%son'
+  AND LENGTH(LAST_NAME) >= 5;
+
+
+-- Q2. Group employees by hire day. Count employees hired on an odd
+-- day number of the year. Keep groups with average salary >= 7000.
+-- Show HIRE_DAY and TOTAL_HIRED, sorted by TOTAL_HIRED descending.
+
+SELECT TO_CHAR(HIRE_DATE,'FMDAY') AS HIRE_DAY,
+        COUNT(*) AS TOTAL_HIRED
+FROM EMPLOYEES
+WHERE MOD(TO_NUMBER(TO_CHAR(HIRE_DATE, 'DDD')),2)= 1
+GROUP BY TO_CHAR(HIRE_DATE,'FMDAY')
+HAVING AVG(SALARY)>=7000
+ORDER BY TOTAL_HIRED DESC;
+
+
+-- Q3. Show EMPLOYEE_ID, SALARY, and INCOME_STATUS.
+-- High Fixed: salary > 10000
+-- Standard Fixed: salary >= 10000
+
+SELECT EMPLOYEE_ID,SALARY,
+  CASE
+      WHEN SALARY > 10000 THEN 'HIGH FIXED'
+      WHEN SALARY >= 10000 THEN 'STANDARD FIXED'
+      END  AS INCOME_STATUS
+FROM EMPLOYEES;
+
+
+-- Q4.
+-- i. Create YOUNG_EMPLOYEES with the structure of EMPLOYEES.
+-- ii. Insert employees hired in the latest recruitment year.
+-- iii. Add constraints:
+--      FIRST_NAME is NOT NULL.
+--      EMAIL is UNIQUE and contains '@'.
+--      SALARY >= 2000.
+-- iv. Drop COMMISSION_PCT.
+
+CREATE TABLE YOUNG_EMPLOYEES AS
+SELECT *
+FROM EMPLOYEES
+WHERE 1 = 0;
+
+--DELETE FROM YOUNG_EMPLOYEES;
+
+INSERT INTO YOUNG_EMPLOYEES
+SELECT  *
+FROM EMPLOYEES
+WHERE  EXTRACT(YEAR FROM HIRE_DATE) =
+       (
+            SELECT MAX(EXTRACT(YEAR FROM HIRE_DATE))
+            FROM EMPLOYEES
+        );
+        
+-- UPDATE YOUNG_EMPLOYEES
+-- SET EMAIL = EMAIL || '@company.com'
+-- WHERE EMAIL NOT LIKE '%@%';
+
+ALTER TABLE YOUNG_EMPLOYEES
+MODIFY FIRST_NAME NOT NULL;
+
+ALTER TABLE YOUNG_EMPLOYEES
+ADD CONSTRAINT EMAIL_UK
+UNIQUE(EMAIL);
+
+ALTER TABLE YOUNG_EMPLOYEES
+ADD CONSTRAINT EMAIL_CK
+CHECK (EMAIL LIKE '%@%');
+
+ALTER TABLE YOUNG_EMPLOYEES
+ADD CONSTRAINT SALARY_CK
+CHECK (SALARY>=2000);
+
+ALTER TABLE YOUNG_EMPLOYEES
+DROP COLUMN COMMISSION_PCT;
+
+
+-- Q5.
+-- i. Add SALARY_GRADE with allowed values L, M, H.
+-- ii. Set:
+--     L if salary < 7000
+--     M if salary is between 7000 and 12000
+--     H if salary > 12000
+-- iii. Increase salary by 8% for SA_ jobs hired in March.
+
+ALTER TABLE EMPLOYEES
+ADD SALARY_GRADE CHAR(1);
+
+ALTER TABLE EMPLOYEES
+ADD CONSTRAINT SALARY_CK2
+CHECK (SALARY_GRADE IN ('L','M','H'));
+
+UPDATE EMPLOYEES
+SET SALARY_GRADE=
+      CASE 
+        WHEN SALARY<7000 THEN 'L'
+        WHEN SALARY BETWEEN 7000 AND 12000 THEN 'M'
+        WHEN SALARY>12000 THEN 'H'
+END;
+
+UPDATE EMPLOYEES
+SET SALARY=SALARY+SALARY*0.08
+WHERE JOB_ID LIKE 'SA_%'
+AND EXTRACT(MONTH FROM HIRE_DATE)=3;
+
+-- ROLLBACK;

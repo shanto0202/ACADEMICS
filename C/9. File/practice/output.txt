@@ -1,0 +1,4 @@
+Row sums (3 rows):
+6 9 15 
+Column sums (3 cols):
+7 10 13 

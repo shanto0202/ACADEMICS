@@ -1,0 +1,16 @@
+AVL
+operation,count,total_ns,average_ns
+insert,47,21000,446
+delete,23,9500,413
+find,7,1100,157
+traverse,3,17200,5733
+
+Interval Scheduler
+operation,count,total_ns,average_ns
+add,950,1887000,1986
+remove,120,219600,1830
+update,130,289600,2227
+conflict,150,34500,230
+overlaps,150,211900,1412
+at,150,118700,791
+next,150,28100,187

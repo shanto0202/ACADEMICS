@@ -1,0 +1,1 @@
+A[i][j][k] = one_d_array[i*(m*n) + j*n + k];
